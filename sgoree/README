@@ -1,0 +1,17 @@
+HW2 Sam Goree
+
+Snapshot 1
+
+The assignment called for a program named NBPart1, so you can either start the program by calling NBPart1.sh with the arguments you specified or call main.py where the second argument is "NaiveBayes" (instead of id3 or c4.5)
+
+There's also a DEBUG flag at the top of naive_bayes.py that you can set to see exactly what's going on.
+
+Snapshot 2
+
+My source code is a little messier this time, but everything seems to work as intended on the test set you gave us. Calling NBPart2.py with the test_set file works, you can also specify the training set folder and stop words list (in that order) if you want. NBPart2.py <test_set> -p <pickle_file> loads a pickle file (created if you run with the DEBUG flag at the top set to True) with the training data all processed, which speeds up debugging.
+
+Final Handin
+
+Very little has changed since Snapshot 2, experiment1.py runs the first experiment with hard-coded file paths and values. NBPart2.py runs the second experiment with functionality unchanged.
+
+I have adhered to the honor code on this assignment.
