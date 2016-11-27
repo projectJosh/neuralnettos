@@ -53,8 +53,8 @@ for seed in range(100,130):
 	results[0][0].append(accuracy(id3_matrix))
 	# run neural nets on monks
 	mlp = neuralnets.neural_nets()
-	mlp.trainer(monks_training_set, monks_attributes)
-	nnet_labels, nnet_matrix = test(monks_test_set, lambda inst: mlp.classify(inst), copy.deepcopy(monks_labels))
+	mlp.train(monks_training_set, monks_attributes)
+	nnet_matrix = mlp.classify(monks_test_set, monks_labels)
 	print(iotools.print_confusion_matrix(nnet_matrix, nnet_labels))
 	print(accuracy(nnet_matrix))
 	results[0][1].append(accuracy(nnet_matrix))
@@ -80,12 +80,13 @@ for seed in range(100,130):
 	print(iotools.print_confusion_matrix(id3_matrix, id3_labels))
 	print(accuracy(id3_matrix))
 	results[1][0].append(accuracy(id3_matrix))
-	# run c4.5 on digits
-	rules = c45.c45(copy.deepcopy(digits_attributes), digits_training_set)
-	c45_labels, c45_matrix = test(digits_test_set, lambda inst: decision_rule.classify_on_rule_list(inst, rules), digits_labels)
-	print(iotools.print_confusion_matrix(c45_matrix, c45_labels))
-	print(accuracy(c45_matrix))
-	results[1][1].append(accuracy(c45_matrix))
+	# run neural nets on digits
+	mlp = neuralnets.neural_nets()
+	mlp.train(digits_training_set, digits_attributes)
+	nnet_matrix = mlp.classify(monks_test_set, digits_labels)
+	print(iotools.print_confusion_matrix(nnet_matrix, digits_labels))
+	print(accuracy(nnet_matrix))
+	results[0][1].append(accuracy(nnet_matrix))
 	# run NB on digits
 	nb_attributes = copy.deepcopy(digits_attributes)
 	nb_attributes.remove(label_attribute)
