@@ -45,6 +45,11 @@ class neural_nets:
             y = numpy.argmax(results[counter])
             confusionMatrix[x][y] = confusionMatrix[x][y] + 1
             counter = counter+1
+        file = open('nnOutput.txt','w')
+        for y in confusionMatrix:
+            for x in confusionMatrix[y]:
+                file.write(confusionMatrix[x][y])
+            file.write('\n')
         return self.mlp.score(testEncodings, labels, sample_weight=None), confusionMatrix
         
     #What do we need to return? How do we process it? How do we send the instances into this, for both training and predicting?
