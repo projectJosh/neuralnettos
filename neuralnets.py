@@ -24,15 +24,27 @@ class neural_nets:
             numpy.append(labels, numpy.argmax(vectors[i]))
         self.mlp = clf.fit(encodings, labels)
         #Y is a 1D array of the different labels for the trainingSet.
-        return 1
-    def classify(self, testSetEncodings, attributes, labels):
+        return self.mlp
+    def classify(self, testSet, attributes, labels):
         #In order to classify, we use predict given the test set.
         #X is a 2D array of the encodings of the testSet, and the list of attributes.
         decrypt = encoder
-        results = []
-        for i in testSetEncodings:
-            results.append(decrypt.encode(decrypt, testSetEncodings[i], attributes))
-        self.mlp.predict(results)
-        return self.mlp.score(results, labels, sample_weight=None)
+        confusionMatrix = [[0]*len(labels) for _ in range(len(labels))] #This is a 2D array, with dimensions: number of labels x number of labels.
+        testEncodings = [] #This is an array of the encodings of the testSet
+        results = [] #This array stores the predictions in encoding form.
+        for i in testSet:
+            testEncodings.append(decrypt.encode(decrypt, testEncodings[i], attributes))
+        results = self.mlp.predict(testEncodings)
+        
+        #Now, we start a counter. We use the counter as the index of both testSetEncodings and results.
+        #Then, we go through and find the index of the 1 in each of them. Use those as the 
+        #coordinates in confusionMatrix.
+        counter = 0
+        while counter < len(testEncodings):
+            x = numpy.argmax(testEncodings[counter])
+            y = numpy.argmax(results[counter])
+            confusionMatrix[x][y] = confusionMatrix[x][y] + 1
+            counter = counter+1
+        return self.mlp.score(testEncodings, labels, sample_weight=None), confusionMatrix
         
     #What do we need to return? How do we process it? How do we send the instances into this, for both training and predicting?
