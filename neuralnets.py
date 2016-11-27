@@ -25,7 +25,8 @@ class neural_nets:
         self.mlp = clf.fit(encodings, labels)
         #Y is a 1D array of the different labels for the trainingSet.
         return self.mlp
-    def classify(self, testSet, attributes, labels):
+        
+    def classify(self, testSet, attributes, labels, filename):
         #In order to classify, we use predict given the test set.
         #X is a 2D array of the encodings of the testSet, and the list of attributes.
         decrypt = encoder
@@ -45,7 +46,7 @@ class neural_nets:
             y = numpy.argmax(results[counter])
             confusionMatrix[x][y] = confusionMatrix[x][y] + 1
             counter = counter+1
-        file = open('nnOutput.txt','w')
+        file = open(filename,'w')
         for y in confusionMatrix:
             for x in confusionMatrix[y]:
                 file.write(confusionMatrix[x][y])
