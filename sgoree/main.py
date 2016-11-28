@@ -9,7 +9,7 @@ import id3
 import c45
 import decision_rule
 import naive_bayes
-import neuralnets
+#import neuralnets
 
 import sys
 import itertools
@@ -89,10 +89,10 @@ def main():
 		nb = naive_bayes.BayesianClassifier()
 		nb.train(training_set, attributes)
 		labels, matrix = test(partitions[-1], lambda inst: nb.classify(inst, attributes), labels)
-	elif algorithm == 'neuralnets':
+	#elif algorithm == 'neuralnets':
 	        
-	        nn = ?
-	        nn.train(training_set, attributes)
+	#        nn = ?
+	#        nn.train(training_set, attributes)
 	else:
 		print("Sorry, that algorithm is not implemented yet")
 		sys.exit(1)

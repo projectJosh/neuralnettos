@@ -33,10 +33,10 @@ for p,a in zip(proportions, accuracies_a):
 		test_set = partitions[-1]
 		mlp = neuralnets.neural_nets()
 		mlp.train(training_set, attributes)
-		nnet_matrix = mlp.classify(test_set, labels)
+		nnet_accuracy, nnet_matrix = mlp.classify(test_set, attributes, labels)
 		print(iotools.print_confusion_matrix(nnet_matrix, labels))
-		print(accuracy(nnet_matrix))
-		a.append(accuracy(nnet_matrix))
+		print(nnet_accuracy)
+		a.append(nnet_accuracy)
 	print("Proportion:1/" + str(p))
 	print("accuracy: ", str(sum(a)/len(a)))
 
@@ -51,8 +51,8 @@ for seed in range(100, 110):
 	for a,num_iterations in zip(accuracies_b, range(0, 2000, 200)):
 		mlp = neuralnets.neural_nets()
 		mlp.train(training_set, attributes)
-		nnet_matrix = mlp.classify(test_set, labels)
+		nnet_accuracy, nnet_matrix = mlp.classify(test_set, attributes, labels)
 		print(iotools.print_confusion_matrix(nnet_matrix, labels))
-		print(accuracy(nnet_matrix))
-		a.append(accuracy(nnet_matrix))
+		print(nnet_accuracy)
+		a.append(nnet_accuracy)
 

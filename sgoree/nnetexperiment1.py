@@ -1,8 +1,5 @@
 # nnetexperiment1.py
-# contains code to run the first experiment of the neural net homework assignment
-
-# experiment1.py
-# runs naive bayes, id3 and neural nets 30 times on each of two datasets (monks1, opticalDigit)
+# runs id3, nnets, NB on two data sets 30 times each
 
 import id3
 import naive_bayes
@@ -13,6 +10,12 @@ import decision_rule
 import sys
 import math
 import copy
+
+sys.path.append('../')
+import neuralnets
+
+num_hidden_neurons = 5
+num_training_iterations = 200
 
 # should return accuracy as a percentage with the 95% confidence interval
 def accuracy(confusion_matrix):
@@ -27,13 +30,13 @@ def accuracy(confusion_matrix):
 	confidence = 1.96 * stddev
 	return accuracy, confidence
 
-monks_attributes, monks_full_dataset = iotools.parse_file('../DecisionTrees/data/monks1.csv')
+monks_attributes, monks_full_dataset = iotools.parse_file('../data/monks1.csv')
 monks_labels = []
 label_attribute='label'
 for instance in monks_full_dataset:
 	if instance[label_attribute] not in monks_labels: monks_labels.append(instance[label_attribute])
 
-digits_attributes, digits_full_dataset = iotools.parse_file('../DecisionTrees/data/opticalDigit.csv')
+digits_attributes, digits_full_dataset = iotools.parse_file('../data/opticalDigit.csv')
 digits_labels = []
 for instance in digits_full_dataset:
 	if instance[label_attribute] not in digits_labels: digits_labels.append(instance[label_attribute])
@@ -48,14 +51,17 @@ for seed in range(100,130):
 	# run id3 on monks
 	tree = id3.id3(copy.deepcopy(monks_attributes), monks_training_set)
 	id3_labels, id3_matrix = test(monks_test_set, tree.classify, copy.deepcopy(monks_labels))
+	print("ID3, Monks, seed =", seed)
 	print(iotools.print_confusion_matrix(id3_matrix, id3_labels))
 	print(accuracy(id3_matrix))
 	results[0][0].append(accuracy(id3_matrix))
 	# run neural nets on monks
 	mlp = neuralnets.neural_nets()
-	mlp.train(monks_training_set, monks_attributes)
-	nnet_matrix = mlp.classify(monks_test_set, monks_labels)
-	print(iotools.print_confusion_matrix(nnet_matrix, nnet_labels))
+	mlp.train(monks_training_set, monks_attributes, num_hidden_neurons, num_training_iterations, seed, True)
+	nnet_matrix = mlp.classify(monks_test_set, monks_attributes, monks_labels, True)
+	nnet_accuracy = accuracy(nnet_matrix)
+	print("NNet, Monks, seed =", seed)
+	print(iotools.print_confusion_matrix(nnet_matrix, monks_labels))
 	print(accuracy(nnet_matrix))
 	results[0][1].append(accuracy(nnet_matrix))
 	# run NB on monks
@@ -64,6 +70,7 @@ for seed in range(100,130):
 	nb = naive_bayes.BayesianClassifier()
 	nb.train(monks_training_set, nb_attributes)
 	nb_labels, nb_matrix = test(monks_test_set, lambda inst: nb.classify(inst, nb_attributes), copy.deepcopy(monks_labels))
+	print("NB, Monks, seed =", seed)
 	print(iotools.print_confusion_matrix(nb_matrix, nb_labels ))
 	print(accuracy(nb_matrix))
 	results[0][2].append(accuracy(nb_matrix))
@@ -77,22 +84,26 @@ for seed in range(100,130):
 	# run id3 on digits
 	tree = id3.id3(copy.deepcopy(digits_attributes), digits_training_set)
 	id3_labels, id3_matrix = test(digits_test_set, tree.classify, digits_labels)
+	print("ID3, Digits, seed =", seed)
 	print(iotools.print_confusion_matrix(id3_matrix, id3_labels))
 	print(accuracy(id3_matrix))
 	results[1][0].append(accuracy(id3_matrix))
 	# run neural nets on digits
 	mlp = neuralnets.neural_nets()
-	mlp.train(digits_training_set, digits_attributes)
-	nnet_matrix = mlp.classify(monks_test_set, digits_labels)
+	mlp.train(digits_training_set, digits_attributes, num_hidden_neurons, num_training_iterations, seed)
+	nnet_matrix = mlp.classify(digits_test_set, digits_attributes, digits_labels)
+	nnet_accuracy = accuracy(nnet_matrix)
+	print("NNet, Digits, seed =", seed)
 	print(iotools.print_confusion_matrix(nnet_matrix, digits_labels))
-	print(accuracy(nnet_matrix))
-	results[0][1].append(accuracy(nnet_matrix))
+	print(nnet_accuracy)
+	results[0][1].append(nnet_accuracy)
 	# run NB on digits
 	nb_attributes = copy.deepcopy(digits_attributes)
 	nb_attributes.remove(label_attribute)
 	nb = naive_bayes.BayesianClassifier()
 	nb.train(digits_training_set, nb_attributes)
 	nb_labels, nb_matrix = test(digits_test_set, lambda inst: nb.classify(inst, nb_attributes), digits_labels)
+	print("NB, Digits, seed =", seed)
 	print(iotools.print_confusion_matrix(nb_matrix, nb_labels))
 	print(accuracy(nb_matrix))
 	results[1][2].append(accuracy(nb_matrix))
