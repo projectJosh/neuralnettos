@@ -1,14 +1,16 @@
 import numpy
-
+from collections import OrderedDict
 
 
 class encoder():
     #strings map to strings or floats, aka attribute category to values. Createa  function that takes a dataset, aka orderedDicts, and a list of attribute names, and
     #converts each orderedDict entry to a 2D array. Result should be a 3D array, use numpy.
-    uniqueValues = []
-    values = {}
+    notUsed = []
+    def __init__(self):
+        self.notUsed.append(2)
+        #self.values = OrderedDict()
     
-    def decode(self, code, attributes):    #We can send this method the 1hotencoding and it should return the values associated with it.
+    def decode(self, code, attributes):    
         vMap = {}
         for item in code:
             counter = 0
@@ -22,33 +24,30 @@ class encoder():
     def encode(self, listDic, attributes): #Given a dictionary of attributes->values, and the list of attributes, and then output a 2D array, 
             # in addition to the desired outputs for encoding, we also want to build a mapping that allows us to decode later. 
             # It would be <index of encoding, <attribute, value>>
-            
             #dmap doesn't seem necessary at all, especially with decode() up above.
             
-            dmap = [] #decodeMap builds a list of <attribute, value> in the order that we build an encoding.
+            #dmap = [] #decodeMap builds a list of <attribute, value> in the order that we build an encoding.
             #So, if we want to decode an encoding, we just create a counter at 0, iterate through for each attribute: for each value: and increment the counter at each value.
             #this list of dictionaries, which map attributes -> possible values of that attribute.
             #We need a list of all of the unique values across all attributes, as well as a mapping of attribute->list of possible values.
-            for instance in listDic:
-                for attribute in attributes:
-                    if attribute not in self.values.keys():     
-                        self.values[attribute] = []
-                    if instance[attribute] not in self.values[attribute]:
-                        self.values[attribute].append(instance[attribute])
-                        self.uniqueValues.append(instance[attribute])
+            #for instance in listDic:
+            #    for attribute in attributes:
+            #        if attribute not in self.values.keys():     
+            #            self.values[attribute] = []
+            #        if instance[attribute] not in self.values[attribute]:
+            #            self.values[attribute].append(instance[attribute])
         
             resultA = [[] for l in listDic]
             resultL = [[] for l in listDic]
-                    
+            #If attributes is an ordered Dictionary in which we have attributes -> list of possible values for that attribute:
             for i,instance in enumerate(listDic):
-                for attribute in attributes:
-                    for v in self.values[attribute]: #We need a list of all the values for a given attribute.
+                for attribute in attributes.keys():
+                    for v in attributes[attribute]: #We need a list of all the values for a given attribute.
                         if attribute == "label":
-                            for label in self.values["label"]:
-                                if label == v:
-                                    resultL[i].append(1)
-                                else:
-                                    resultL[i].append(0)
+                            if instance[attribute] == v:
+                                resultL[i].append(1)
+                            else:
+                                resultL[i].append(0)
                         else:
                             if instance[attribute] == v:
                                 resultA[i].append(1)

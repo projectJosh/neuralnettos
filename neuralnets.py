@@ -21,7 +21,7 @@ class neural_nets:
         else:
             encodings = []
             att = copy.deepcopy(attributes)
-            att.remove('label')
+            att.pop('label')
             for instance in trainingSet:
                 encodings.append([float(instance[a]) for a in att])
             _, vectors = encrypt.encode(trainingSet, attributes)
@@ -45,18 +45,17 @@ class neural_nets:
         if not onehot:
             testEncodings = []
             att = copy.deepcopy(attributes)
-            att.remove('label')
+            att.pop('label')
             for instance in testSet:
                 testEncodings.append([float(instance[a]) for a in att])
         results = self.mlp.predict(testEncodings)
-        
         #Now, we start a counter. We use the counter as the index of both testSetEncodings and results.
         #Then, we go through and find the index of the 1 in each of them. Use those as the 
         #coordinates in confusionMatrix.
         counter = 0
         while counter < len(testEncodings):
             x = numpy.argmax(testLabels[counter])
-            y = numpy.argmax(results[counter])
+            y = int(results[counter])
             confusionMatrix[x][y] = confusionMatrix[x][y] + 1
             counter = counter+1
         """file = open(filename,'w') - turns out I don't actually need the file stuff
@@ -64,6 +63,6 @@ class neural_nets:
             for x in confusionMatrix[y]:
                 file.write(confusionMatrix[x][y])
             file.write('\n')"""
-        return confusionMatrix
+        return confusionMatrix, self.mlp.score(testEncodings, numpy.argmax(testLabels, axis=1))
         
     #What do we need to return? How do we process it? How do we send the instances into this, for both training and predicting?
